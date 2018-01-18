@@ -56,6 +56,11 @@ LOCAL_C_INCLUDES :=                                                 \
     $(TOP)/frameworks/native/include/media/openmax                  \
     $(TOP)/external/tremolo/Tremolo                                 \
 
+# Mediatek
+ifeq ($(strip $(BOARD_HAS_MTK_HARDWARE)),true)
+LOCAL_SHARED_LIBRARIES += libmtkplayer
+endif
+
 LOCAL_MODULE:= libmediaplayerservice
 
 LOCAL_32_BIT_ONLY := true

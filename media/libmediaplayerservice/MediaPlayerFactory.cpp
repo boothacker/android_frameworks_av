@@ -35,6 +35,10 @@
 #include "nuplayer/NuPlayerDriver.h"
 #include <dlfcn.h>
 
+#ifdef MTK_HARDWARE
+#include "FMAudioPlayer.h"
+#endif
+
 namespace android {
 
 Mutex MediaPlayerFactory::sLock;
@@ -388,6 +392,24 @@ class TestPlayerFactory : public MediaPlayerFactory::IFactory {
     }
 };
 
+#ifdef MTK_HARDWARE
+class FMPlayerFactory : public MediaPlayerFactory::IFactory {
+  public:
+    virtual float scoreFactory(const sp<IMediaPlayer>& client,
+                               const char* url,
+                               float curScore) {
+        if(strncmp(url, "MEDIATEK://MEDIAPLAYER_PLAYERTYPE_FM", 36) == 0)
+           return 1.0;
+        return 0.0;
+    }
+
+    virtual sp<MediaPlayerBase> createPlayer() {
+        ALOGV("Create FM Player");
+        return new FMAudioPlayer();
+    }
+};
+#endif
+
 void MediaPlayerFactory::registerBuiltinFactories() {
     Mutex::Autolock lock_(&sLock);
 
@@ -399,6 +421,9 @@ void MediaPlayerFactory::registerBuiltinFactories() {
     registerFactory_l(new SonivoxPlayerFactory(), SONIVOX_PLAYER);
     registerFactory_l(new TestPlayerFactory(), TEST_PLAYER);
 
+#ifdef MTK_HARDWARE
+    registerFactory_l(new FMPlayerFactory(), FM_AUDIO_PLAYER);
+#endif
     const char* FACTORY_LIB           = "libdashplayer.so";
     const char* FACTORY_CREATE_FN     = "CreateDASHFactory";
 

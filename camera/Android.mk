@@ -39,6 +39,12 @@ LOCAL_SRC_FILES:= \
 	CameraUtils.cpp \
 	VendorTagDescriptor.cpp
 
+ifeq ($(TARGET_BOARD_PLATFORM),mt6589)
+LOCAL_SRC_FILES += \
+	MtkCamera.cpp \
+	MtkCameraParameters.cpp
+endif
+
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \
 	libutils \
@@ -57,6 +63,10 @@ ifneq ($(TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY),)
 LOCAL_WHOLE_STATIC_LIBRARIES += $(TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY)
 else
 LOCAL_WHOLE_STATIC_LIBRARIES += libcamera_parameters
+endif
+
+ifeq ($(TARGET_BOARD_PLATFORM),mt6589)
+LOCAL_CFLAGS += -DMTK_MT6589
 endif
 
 LOCAL_MODULE:= libcamera_client
