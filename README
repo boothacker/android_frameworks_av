@@ -1,0 +1,4 @@
+cd hardware/libhardware
+git remote add master https://github.com/boothacker/android_frameworks_av
+git fetch master 
+git cherry-pick ce94603dc14606fb370705c5669cfda9518715a1
